@@ -38,8 +38,8 @@
     }
 
     body {
-      background-color: var(--cream);
-      color: var(--brown-deep);
+      background-color: #000;
+      color: var(--cream);
       font-family: 'Lato', sans-serif;
       font-size: 1rem;
       line-height: 1.78;
@@ -119,7 +119,7 @@
       left: 0;
       right: 0;
       height: 42%;
-      background: linear-gradient(to top, var(--brown-deep) 0%, transparent 100%);
+      background: linear-gradient(to top, #000 0%, transparent 100%);
       z-index: 1;
     }
 
@@ -184,12 +184,12 @@
       position: relative;
       z-index: 1;
       padding: 7rem 2rem;
-      background-color: var(--cream);
+      background-color: #000;
     }
 
     .section-heading {
       font-size: clamp(1.9rem, 4.5vw, 3rem);
-      color: var(--brown-deep);
+      color: var(--cream);
       text-align: center;
       margin-bottom: 4rem;
     }
@@ -258,7 +258,7 @@
 
     .about-bio {
       font-size: 1.07rem;
-      color: var(--brown-mid);
+      color: rgba(250, 246, 240, 0.72);
       line-height: 1.9;
     }
 
@@ -327,7 +327,7 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--brown-light);
+      color: var(--gold);
       background: rgba(201, 168, 76, 0.07);
       border-bottom: 1px solid var(--gold-dim);
     }
@@ -338,7 +338,7 @@
       text-align: center;
       font-family: 'Lato', sans-serif;
       font-size: 0.9rem;
-      color: var(--brown-deep);
+      color: var(--cream);
       cursor: pointer;
       user-select: none;
       display: flex;
@@ -352,7 +352,7 @@
 
     /* Past dates greyed out */
     .cal-cell.past {
-      color: #c7bab0;
+      color: rgba(250, 246, 240, 0.22);
       cursor: not-allowed;
     }
 
@@ -405,12 +405,13 @@
       border: 1px solid var(--gold-dim);
       border-radius: 3px;
       padding: 2.6rem 2.8rem;
-      box-shadow: 0 6px 28px rgba(44, 20, 0, 0.08);
+      background: #0d0d0d;
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.5);
     }
 
     .booking-form-card h3 {
       font-size: 1.52rem;
-      color: var(--brown-deep);
+      color: var(--cream);
       margin-bottom: 2rem;
     }
 
@@ -431,7 +432,7 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--brown-light);
+      color: var(--gold-light);
     }
 
     /* Shared field styles — cream background, brown borders */
@@ -534,13 +535,13 @@
     .form-status.success {
       background: rgba(201, 168, 76, 0.1);
       border: 1px solid rgba(201, 168, 76, 0.5);
-      color: var(--brown-deep);
+      color: var(--cream);
     }
 
     .form-status.error {
-      background: rgba(160, 50, 20, 0.06);
-      border: 1px solid rgba(160, 50, 20, 0.3);
-      color: #7a2410;
+      background: rgba(160, 50, 20, 0.15);
+      border: 1px solid rgba(200, 80, 50, 0.4);
+      color: #f4a48a;
     }
 
     /* ===========================================================
@@ -549,7 +550,7 @@
     footer {
       position: relative;
       z-index: 1;
-      background: var(--brown-deep);
+      background: #000;
       padding: 3.2rem 2rem 2.8rem;
       text-align: center;
     }
@@ -766,11 +767,10 @@
 
   <script>
     /* ===========================================================
-       SPRINKLES — ANIMATED FALLING SHAPES
-       Small rectangles, ovals, and dots in gold and brown drift
-       downward across the cream background on a fixed canvas.
-       The animation is skipped entirely if the user has
-       prefers-reduced-motion enabled.
+       HEARTS — ANIMATED FALLING CREAM HEARTS
+       Small cream-coloured hearts drift slowly down the black
+       background. Animation is skipped if prefers-reduced-motion
+       is enabled.
     =========================================================== */
     (function () {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -781,34 +781,43 @@
       const canvas = document.getElementById('sprinkles-canvas');
       const ctx    = canvas.getContext('2d');
 
+      /* Cream shades at varying opacities for depth */
       const PALETTE = [
-        '#c9a84c', /* gold */
-        '#e8c97a', /* gold light */
-        '#d4a853', /* gold mid */
-        '#3b1f0e', /* dark brown */
-        '#8b5e3c', /* mid brown */
-        '#b8973f'  /* warm gold */
+        'rgba(250, 246, 240, 0.55)',
+        'rgba(250, 246, 240, 0.35)',
+        'rgba(250, 246, 240, 0.70)',
+        'rgba(232, 201, 122, 0.40)', /* faint gold-cream */
+        'rgba(250, 246, 240, 0.25)'
       ];
-      const SHAPES = ['rect', 'oval', 'dot'];
-      const COUNT  = 65;
+      const COUNT = 55;
 
-      let W = 0, H = 0, sprinkles = [];
+      let W = 0, H = 0, hearts = [];
 
       function rand(lo, hi) { return lo + Math.random() * (hi - lo); }
 
+      /* Draw a heart centred at (0,0) with the given size using two bezier curves */
+      function heartPath(size) {
+        const s = size;
+        ctx.beginPath();
+        ctx.moveTo(0, s * 0.5);
+        /* Left lobe */
+        ctx.bezierCurveTo(-s * 1.0,  s * 0.1,  -s * 1.0, -s * 0.5,  0, -s * 0.2);
+        /* Right lobe */
+        ctx.bezierCurveTo( s * 1.0, -s * 0.5,   s * 1.0,  s * 0.1,  0,  s * 0.5);
+        ctx.closePath();
+      }
+
       function make(scatterFull) {
+        const size = rand(5, 13);
         return {
           x:     rand(0, W),
-          y:     scatterFull ? rand(0, H) : rand(-140, -4),
-          w:     rand(4, 10),
-          h:     rand(2, 5),
-          angle: rand(0, Math.PI * 2),
-          speed: rand(0.35, 1.05),
-          drift: rand(-0.25, 0.25),
-          spin:  rand(-0.013, 0.013),
-          color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-          alpha: rand(0.28, 0.60),
-          shape: SHAPES[Math.floor(Math.random() * SHAPES.length)]
+          y:     scatterFull ? rand(0, H) : rand(-160, -size),
+          size,
+          angle: rand(-0.4, 0.4),         /* slight initial tilt */
+          speed: rand(0.3, 0.9),
+          drift: rand(-0.2, 0.2),
+          spin:  rand(-0.008, 0.008),
+          color: PALETTE[Math.floor(Math.random() * PALETTE.length)]
         };
       }
 
@@ -818,40 +827,27 @@
       }
 
       function init() {
-        sprinkles = Array.from({ length: COUNT }, () => make(true));
+        hearts = Array.from({ length: COUNT }, () => make(true));
       }
 
-      function drawOne(s) {
+      function drawOne(h) {
         ctx.save();
-        ctx.globalAlpha = s.alpha;
-        ctx.fillStyle   = s.color;
-        ctx.translate(s.x, s.y);
-        ctx.rotate(s.angle);
-
-        if (s.shape === 'rect') {
-          ctx.fillRect(-s.w / 2, -s.h / 2, s.w, s.h);
-        } else if (s.shape === 'oval') {
-          ctx.beginPath();
-          ctx.ellipse(0, 0, s.w / 2, s.h / 2, 0, 0, Math.PI * 2);
-          ctx.fill();
-        } else { /* dot */
-          ctx.beginPath();
-          ctx.arc(0, 0, s.h / 2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
+        ctx.translate(h.x, h.y);
+        ctx.rotate(h.angle);
+        ctx.fillStyle = h.color;
+        heartPath(h.size);
+        ctx.fill();
         ctx.restore();
       }
 
       function tick() {
         ctx.clearRect(0, 0, W, H);
-        sprinkles.forEach(s => {
-          s.y     += s.speed;
-          s.x     += s.drift;
-          s.angle += s.spin;
-          /* Recycle when fully off the bottom */
-          if (s.y > H + 20) Object.assign(s, make(false));
-          drawOne(s);
+        hearts.forEach(h => {
+          h.y     += h.speed;
+          h.x     += h.drift;
+          h.angle += h.spin;
+          if (h.y > H + 20) Object.assign(h, make(false));
+          drawOne(h);
         });
         requestAnimationFrame(tick);
       }
